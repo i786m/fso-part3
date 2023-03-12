@@ -1,0 +1,37 @@
+//get all
+GET http://localhost:3001/api/persons
+
+###
+//get info
+GET http://localhost:3001/info
+
+###
+//get single
+GET http://localhost:3001/api/persons/3
+
+###
+//get single non existing
+GET http://localhost:3001/api/persons/10000
+
+###
+//delete
+DELETE http://localhost:3001/api/persons/1
+
+###
+//post
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{ 
+      "name": "Testing post", 
+      "number": "12345678"
+    }
+
+###
+//post with content missing
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{ 
+      "name": "Testing post with content missing"
+    }
