@@ -5,12 +5,17 @@ const morgan=require('morgan')
 const unknownEndpoint = (request, response) => {
     response.status(404).send({ error: 'unknown endpoint' })
   }
-
 //middleware
 app.use(express.json());
-app.use(morgan('tiny'))
 
 
+morgan.token('postBody', request=>request.method==='POST'? JSON.stringify(request.body): null)
+
+
+app.use(
+    morgan(":method :url :status :res[content-length] - :response-time ms :postBody")
+  );
+  
 let persons = [
   {
     id: 1,
