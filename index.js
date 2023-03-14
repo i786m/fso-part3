@@ -26,10 +26,16 @@ let persons = [
   },
 ];
 
+//endpoints
+
+//get homepage
 app.get('/', (request, response) => {
-  response.send('<h1>Phonebook</h1><p><a href="/api/persons">View contacts</a>');
+  response.send(
+    '<h1>Phonebook</h1><p><a href="/api/persons">View contacts</a>'
+  );
 });
 
+//info
 app.get('/info', (request, response) => {
   response.send(
     `<p>Phonebook has info for ${persons.length} people</p>
@@ -37,32 +43,45 @@ app.get('/info', (request, response) => {
   );
 });
 
+// get contacts
 app.get('/api/persons', (request, response) => {
   response.json(persons);
 });
 
+//get contact
 app.get('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id);
   const person = persons.find(person => person.id === id);
   person ? response.json(person) : response.status(404).end();
 });
 
+//delete contact
 app.delete('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id);
   persons = persons.filter(person => person.id !== id);
   response.status(204).end();
 });
 
+//post contact
 const generateId = () => {
   return Math.floor(Math.random() * 100);
 };
 
 app.post('/api/persons', (request, response) => {
-  
-//error handling
+  //error handling
   if (!request.body.name || !request.body.number) {
     return response.status(400).json({
       error: 'content missing',
+    });
+  }
+
+  if (
+    persons.some(
+      person => person.name.toLowerCase() === request.body.name.toLowerCase()
+    )
+  ) {
+    return response.status(409).json({
+      error: 'name must be unique',
     });
   }
 
