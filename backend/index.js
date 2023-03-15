@@ -1,16 +1,18 @@
 const express = require('express');
 const app = express();
 const morgan=require('morgan')
+const cors = require('cors')
 
 const unknownEndpoint = (request, response) => {
     response.status(404).send({ error: 'unknown endpoint' })
   }
 //middleware
+app.use(cors())
 app.use(express.json());
+app.use(express.static('build'))
 
-
+//morgan show post content config
 morgan.token('postBody', request=>request.method==='POST'? JSON.stringify(request.body): null)
-
 
 app.use(
     morgan(":method :url :status :res[content-length] - :response-time ms :postBody")
@@ -113,7 +115,7 @@ app.post('/api/persons', (request, response) => {
 app.use(unknownEndpoint)
 
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
