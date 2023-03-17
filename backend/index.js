@@ -1,23 +1,29 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
-const morgan=require('morgan')
-const cors = require('cors')
+const morgan = require('morgan');
+const cors = require('cors');
+const Person = require('./models/person');
 
 const unknownEndpoint = (request, response) => {
-    response.status(404).send({ error: 'unknown endpoint' })
-  }
+  response.status(404).send({ error: 'unknown endpoint' });
+};
 //middleware
-app.use(cors())
+app.use(cors());
 app.use(express.json());
-app.use(express.static('build'))
+app.use(express.static('build'));
 
 //morgan show post content config
-morgan.token('postBody', request=>request.method==='POST'? JSON.stringify(request.body): null)
+morgan.token('postBody', request =>
+  request.method === 'POST' ? JSON.stringify(request.body) : null
+);
 
 app.use(
-    morgan(":method :url :status :res[content-length] - :response-time ms :postBody")
-  );
-  
+  morgan(
+    ':method :url :status :res[content-length] - :response-time ms :postBody'
+  )
+);
+
 let persons = [
   {
     id: 1,
@@ -46,7 +52,7 @@ let persons = [
 //get homepage
 app.get('/', (request, response) => {
   response.send(
-    '<h1>Phonebook</h1><p><a href="/api/persons">View contacts</a>'
+    '<h1>Phonebook</h1><p><a href="/api/persons">View contacts</a><a href="/info">View info</a>'
   );
 });
 
@@ -60,14 +66,13 @@ app.get('/info', (request, response) => {
 
 // get contacts
 app.get('/api/persons', (request, response) => {
-  response.json(persons);
+  Person.find({}).then(persons => response.json(persons));
 });
 
 //get contact
 app.get('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id);
-  const person = persons.find(person => person.id === id);
-  person ? response.json(person) : response.status(404).end();
+  Person.findById(request.params.id).then(person=>
+  person ? response.json(person) : response.status(404).end())
 });
 
 //delete contact
@@ -78,9 +83,9 @@ app.delete('/api/persons/:id', (request, response) => {
 });
 
 //post contact
-const generateId = () => {
-  return Math.floor(Math.random() * 100);
-};
+// const generateId = () => {
+//   return Math.floor(Math.random() * 100);
+// };
 
 app.post('/api/persons', (request, response) => {
   //error handling
@@ -90,32 +95,28 @@ app.post('/api/persons', (request, response) => {
     });
   }
 
-  if (
-    persons.some(
-      person => person.name.toLowerCase() === request.body.name.toLowerCase()
-    )
-  ) {
-    return response.status(409).json({
-      error: 'name must be unique',
-    });
-  }
+  // if (
+  //   persons.some(
+  //     person => person.name.toLowerCase() === request.body.name.toLowerCase()
+  //   )
+  // ) {
+  //   return response.status(409).json({
+  //     error: 'name must be unique',
+  //   });
+  // }
 
-  const person = {
-    id: generateId(),
+  const person = new Person({
     name: request.body.name,
     number: request.body.number,
-  };
+  })
 
-  persons = persons.concat(person);
-
-  response.json(person);
+  person.save().then(savedPerson=>response.json(savedPerson))
 });
 
 //middleware
-app.use(unknownEndpoint)
+app.use(unknownEndpoint);
 
-
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
