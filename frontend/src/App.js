@@ -118,6 +118,7 @@ const App = () => {
           }, 5000);
         })
         .catch(error => {
+          console.log(error);
           setErrorMessage(
             `${deletedName} ${error.request.statusText.toLowerCase()} in the directory. Updating ...`
           );

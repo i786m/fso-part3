@@ -6,8 +6,9 @@ GET http://localhost:3001/api/persons
 GET http://localhost:3001/info
 
 ###
-//get single
-GET http://localhost:3001/api/persons/3
+//get single 
+GET http://localhost:3001/api/persons/64116bfd2c0c4509f5b56bb5
+
 
 ###
 //get single non existing
@@ -15,7 +16,8 @@ GET http://localhost:3001/api/persons/10000
 
 ###
 //delete
-DELETE http://localhost:3001/api/persons/1
+DELETE http://localhost:3001/api/persons/6414c3cf447436d0f6a64f64
+
 
 ###
 //post

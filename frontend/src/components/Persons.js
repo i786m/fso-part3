@@ -2,11 +2,13 @@ import React from 'react';
 import Person from './Person';
 
 const Persons = ({ persons, filter, handleDelete }) => {
-  const filteredPersons = persons.filter(person =>
-    person.name.toLowerCase().includes(filter.toLowerCase())
-  );
+  
+  if(persons===null) return null
 
-  const viewPersons = !filter ? persons : filteredPersons;
+  const viewPersons = !filter ? 
+  persons : 
+  persons.filter(person =>
+    person.name.toLowerCase().includes(filter.toLowerCase()))
 
   if (filter && !viewPersons.length)
     return 'Oops! No contacts match your criteria';
