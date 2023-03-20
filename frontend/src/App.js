@@ -19,7 +19,7 @@ const App = () => {
 
   //initial render
   useEffect(() => {
-    numberService.getAll().then(initialNumbers => setPersons(initialNumbers));
+    numberService.getAll().then(initialNumbers => setPersons(initialNumbers)).catch(error => console.log(error))
   }, []);
 
   const handleNameChange = event => {
@@ -59,9 +59,7 @@ const App = () => {
             setErrorMessage(null);
           }, 5000);
         })
-        .catch(error =>
-          setErrorMessage(error.request.statusText.toLowerCase())
-        );
+        .catch(error => setErrorMessage(error.response.data.error));
     }
 
     // update contact if existing in directory
@@ -91,8 +89,11 @@ const App = () => {
             }, 5000);
           })
           .catch(error => {
+            console.log(error);
             setErrorMessage(
-              `${personObject.name} has previously been deleted from the directory. Updating...`
+              error.response.status === 404 ?
+              `${personObject.name} has previously been deleted from the directory. Updating...` :
+              error.response.data.error
             );
             setTimeout(() => {
               setPersons(persons.filter(p => p.id !== existingId));

@@ -10,7 +10,9 @@
     "build:ui": "rm -rf build && cd ../frontend/ && npm run build && cp -r build ../backend",
     "deploy": "fly deploy",
     "deploy:full": "npm run build:ui && npm run deploy",
-    "logs:prod": "fly logs"
+    "logs:prod": "fly logs",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
   },
   "author": "Imran Mohamed <info@imranbmohamed.com>",
   "license": "MIT",
@@ -22,6 +24,8 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.21"
+    "eslint": "^8.36.0",
+    "nodemon": "^2.0.21",
+    "prettier": "^2.8.5"
   }
 }
